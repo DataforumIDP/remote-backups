@@ -3,3 +3,4 @@ run-backup.ps1
 /node_modules
 /backups/*
 !/backups/info.md
+/dist
