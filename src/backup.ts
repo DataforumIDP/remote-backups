@@ -16,11 +16,12 @@ const {
     SERVER_PASSWORD,
     SERVER_TYPE,
     REMOTE_DIR,
+    BACKUP_DIR,
     RETENTION_DAYS
 } = process.env;
 
 // Create backups directory if it doesn't exist
-const backupsDir = path.join(__dirname, '..', 'backups');
+const backupsDir = path.resolve(BACKUP_DIR || path.join(__dirname, '..', 'backups'));
 if (!fs.existsSync(backupsDir)) {
     fs.mkdirSync(backupsDir, { recursive: true });
 }
