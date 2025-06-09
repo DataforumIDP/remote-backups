@@ -14,22 +14,12 @@
   "scripts": {
     "compts": "tsc --watch",
     "dev": "node dist/backup.js",
-    "build:exe": "tsc && pkg .",
+    "build:exe": "tsc && npx exe exe.json && yarn add-icon",
     "add-icon": "tsc && node dist/addIcon.js"
   },
-  "pkg": {
-    "targets": [
-      "node18-win-x64"
-    ],
-    "outputPath": "build/",
-    "assets": [
-      "node_modules/**/**",
-      "src/**/**",
-      "app.ico"
-    ],
-    "icon": "app.ico"
-  },
+  
   "devDependencies": {
+    "@angablue/exe": "^3.2.5",
     "@types/archiver": "^6.0.3",
     "@types/node": "^22.15.29",
     "@types/ssh2": "^1.15.5",

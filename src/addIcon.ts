@@ -1,6 +1,6 @@
 const rcedit = require('rcedit');  
 
-rcedit('build/remote-save.exe', {  
+rcedit('build/exe/remote-save.exe', {  
     'icon': 'app.ico'  
 }, function (error) {  
     if (error) {  
