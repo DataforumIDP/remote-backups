@@ -17,7 +17,9 @@ const {
     SERVER_TYPE,
     REMOTE_DIR,
     BACKUP_DIR,
-    RETENTION_DAYS
+    RETENTION_DAYS,
+    INTERVAL,
+    START
 } = process.env;
 
 // Create backups directory if it doesn't exist
@@ -231,6 +233,45 @@ function cleanOldBackups(): void {
         });
 }
 
+function getNextRunTime(startTime: string, intervalHours: number): Date {
+    const [hours, minutes] = startTime.split(':').map(Number);
+    const now = new Date();
+    let nextRun = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hours, minutes);
+    
+    if (nextRun <= now) {
+        nextRun.setTime(nextRun.getTime() + intervalHours * 60 * 60 * 1000);
+    }
+    
+    return nextRun;
+}
+
+function sleep(ms: number): Promise<void> {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+async function runScheduled() {
+    const interval = parseInt(INTERVAL || '24');
+    const startTime = START || '23:59';
+
+    console.log(`Backup scheduler started. Interval: ${interval} hours, Start time: ${startTime}`);
+
+    while (true) {
+        const nextRun = getNextRunTime(startTime, interval);
+        const now = new Date();
+        const waitTime = nextRun.getTime() - now.getTime();
+
+        console.log(`Next backup scheduled for: ${nextRun.toLocaleString()}`);
+        
+        await sleep(waitTime);
+        
+        console.log('Starting scheduled backup...');
+        await main();
+        
+        // Sleep for 1 minute to avoid potential duplicate runs
+        await sleep(60000);
+    }
+}
+
 async function main() {
     try {
         // Create backups directory if it doesn't exist
@@ -365,4 +406,5 @@ async function main() {
     }
 }
 
-main();
+// Replace the main() call with runScheduled()
+runScheduled();
