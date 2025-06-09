@@ -152,4 +152,50 @@ export class SSHService {
             })
         })
     }
+
+    async deleteFolder(folderPath: string): Promise<void> {
+        return new Promise((resolve, reject) => {
+            const ssh = new SSHClient()
+
+            ssh.on('ready', () => {
+                // Используем rm -rf для рекурсивного удаления
+                ssh.exec(`rm -rf "${folderPath}"`, (err, stream) => {
+                    if (err) {
+                        console.error(`Ошибка при удалении папки ${folderPath}:`, err)
+                        ssh.end()
+                        reject(err)
+                        return
+                    }
+
+                    stream.on('close', () => {
+                        console.log(`Папка ${folderPath} успешно удалена с сервера`)
+                        ssh.end()
+                        resolve()
+                    })
+
+                    stream.on('data', (data: Buffer) => {
+                        console.log('Вывод:', data.toString())
+                    })
+
+                    stream.stderr.on('data', (data: Buffer) => {
+                        console.error('Ошибка:', data.toString())
+                    })
+                })
+            })
+
+            ssh.on('error', err => {
+                console.error('Ошибка SSH подключения:', err)
+                reject(err)
+            })
+
+            ssh.connect({
+                host: this.config.host,
+                port: this.config.port,
+                username: this.config.username,
+                password: this.config.password,
+                readyTimeout: 60000,
+                keepaliveInterval: 10000,
+            })
+        })
+    }
 }

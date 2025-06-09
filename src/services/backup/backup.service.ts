@@ -59,6 +59,10 @@ export class BackupService {
                         this.config.backupDir,
                         `${folderDate.format('YYYY-MM-DD')}_00-00-00`
                     )
+
+                    // Добавляем удаление папки после успешного создания архива
+                    console.log(`Удаление папки ${folder} с сервера...`)
+                    await this.sshService!.deleteFolder(folderPath)
                 } catch (error) {
                     console.error(`Ошибка при обработке папки ${folder}:`, error)
                 } finally {

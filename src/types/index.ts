@@ -10,6 +10,7 @@ export interface ServerConfig {
 export interface BackupConfig {
     backupDir: string
     retentionDays: number
+    deleteRemote: boolean
 }
 
 export interface SchedulerConfig {
