@@ -2,7 +2,7 @@
     "entry": "dist/index.js",
     "out": "build/exe/remote-save.exe",
     "skipBundle": false,
-    "version": "1.1.0",
+    "version": "1.2.0",
     "icon": "app.ico",
     "executionLevel": "asInvoker",
     "properties": {
